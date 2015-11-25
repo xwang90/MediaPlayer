@@ -75,7 +75,7 @@ public class AudioPlayer {
 
 					processDequeueBuffer();
 					
-					// All decoded frames have been rendered, we can stop playing now
+					
 					if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
 						Log.d(TAG, "Audio OutputBuffer BUFFER_FLAG_END_OF_STREAM");
 						break;
@@ -118,8 +118,8 @@ public class AudioPlayer {
 				default:
 					ByteBuffer tmpBuffer = mOutputBuffers[outIndex];
 					final byte[] chunk = new byte[mBufferInfo.size];
-					tmpBuffer.get(chunk); // Read the buffer all at once
-					tmpBuffer.clear(); // ** MUST DO!!! OTHERWISE THE NEXT TIME YOU GET THIS SAME BUFFER BAD THINGS WILL HAPPEN
+					tmpBuffer.get(chunk); 
+					tmpBuffer.clear();
 					
 					if (chunk.length > 0) {
 						mAudioTrack.write(chunk, 0, chunk.length);
