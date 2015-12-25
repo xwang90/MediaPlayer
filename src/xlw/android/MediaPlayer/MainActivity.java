@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaCodec;
 import android.media.MediaCodec.BufferInfo;
 import android.media.MediaExtractor;
@@ -16,14 +17,16 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class MainActivity extends Activity implements SurfaceHolder.Callback {
-	private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/VID_20151125_122454.mp4";
 	private static final String TAG = "MainActivity";
+	private static String file_name;
 	private VideoPlayerThread mVideoPlayer = null;
 	private AudioPlayer mAudioPlayer = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Intent intent = getIntent();                
+		file_name = intent.getData().getPath();
 		SurfaceView sv = new SurfaceView(this);
 		sv.getHolder().addCallback(this);
 		setContentView(sv);
@@ -46,7 +49,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 		
 		if (mAudioPlayer == null) {
 			mAudioPlayer = new AudioPlayer();
-			mAudioPlayer.play(SAMPLE);
+			mAudioPlayer.play(file_name);
 		}
 		
 		
@@ -77,7 +80,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 		public void run() {
 			extractor = new MediaExtractor();
 			try {
-				extractor.setDataSource(SAMPLE);
+				extractor.setDataSource(file_name);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
