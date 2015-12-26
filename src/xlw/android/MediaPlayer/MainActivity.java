@@ -5,12 +5,15 @@ import java.nio.ByteBuffer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.MediaCodec;
 import android.media.MediaCodec.BufferInfo;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -21,12 +24,30 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 	private static String file_name;
 	private VideoPlayerThread mVideoPlayer = null;
 	private AudioPlayer mAudioPlayer = null;
+	
+	public String getRealPathFromURI(Uri contentUri)
+    {
+        try
+        {
+            String[] proj = {MediaStore.Video.Media.DATA};
+            Cursor cursor = this.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        catch (Exception e)
+        {
+            return contentUri.getPath();
+        }
+    }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();                
-		file_name = intent.getData().getPath();
+		file_name = getRealPathFromURI(intent.getData());
+		Log.d(TAG, "file_name:"+file_name);
+		
 		SurfaceView sv = new SurfaceView(this);
 		sv.getHolder().addCallback(this);
 		setContentView(sv);
